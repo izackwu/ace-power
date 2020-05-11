@@ -3,7 +3,7 @@
 """
 
 # App Config
-IS_NAIVE = True
+IS_NAIVE = False
 QUERY_INTERVAL = 10
 QUERY_SQL = """
 SELECT am_author.name, am_affiliation.name

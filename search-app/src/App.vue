@@ -100,7 +100,7 @@ export default {
             this.scholars = res.data.result;
           } else {
             // This is a little bit stupid ...
-            setTimeout(function() {
+            setTimeout(() => {
               this.getData(apiUrl);
             }, 1000 * res.data.waiting);
           }

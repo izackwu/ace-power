@@ -1,1 +1,4 @@
-pika==1.1.0
+fastapi~=0.54.1
+pydantic~=1.5.1
+PyMySQL~=0.9.3
+DBUtils~=1.3

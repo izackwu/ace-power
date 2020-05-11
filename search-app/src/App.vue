@@ -39,7 +39,7 @@ export default {
       scholars: [],
       reformattedSearchString: "",
       api: {
-        baseUrl: "https://localhost:8080/search?",
+        baseUrl: "http://localhost:8000/search",
         part: "snippet",
         type: "video",
         order: "viewCount",
@@ -57,7 +57,8 @@ export default {
       this.api.q = searchParams.join("+");
       const { baseUrl, part, type, order, maxResults, q, key } = this.api;
       // const apiUrl = `${baseUrl}part=${part}&type=${type}&order=${order}&q=${q}&maxResults=${maxResults}&key=${key}`;
-      const apiUrl = `${baseUrl}&q=${q}`;
+      console.log(q);
+      const apiUrl = `${baseUrl}/${q}`;
       this.getData(apiUrl);
     },
 
@@ -95,7 +96,7 @@ export default {
       axios
         .get(apiUrl)
         .then(res => {
-          if (this.data.status) {
+          if (res.data.status) {
             this.scholars = res.data.result;
           } else {
             // This is a little bit stupid ...

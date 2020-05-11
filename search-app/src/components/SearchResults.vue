@@ -25,12 +25,12 @@
     </div>
 
     <div class="card-columns" v-if="displayMode === 'grid'">
-      <div class="card" v-bind:key="scholar.id.scholarId" v-for="scholar in scholars">
+      <div class="card" v-bind:key="scholar.author" v-for="scholar in scholars">
         <ScholarGridItem v-bind:scholar="scholar" />
       </div>
     </div>
     <div v-else>
-      <div class="card mb-2" v-bind:key="scholar.id.scholarId" v-for="scholar in scholars">
+      <div class="card mb-2" v-bind:key="scholar.author" v-for="scholar in scholars">
         <ScholarListItem v-bind:scholar="scholar" />
       </div>
     </div>

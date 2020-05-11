@@ -4,7 +4,8 @@
 
 # App Config
 IS_NAIVE = False
-QUERY_INTERVAL = 10
+QUERY_INTERVAL = 10 # seconds
+EXPIRE_TIME = 30 # minutes
 QUERY_SQL = """
 SELECT am_author.name, am_affiliation.name
 FROM am_author, am_affiliation
@@ -26,3 +27,8 @@ MYSQL_CHARSET = "utf8"
 REDIS_HOST = ""
 REDIS_PORT = 0
 REDIS_PASSWORD = ""
+
+# RabbitMQ
+RABBITMQ_HOST = ""
+RABBITMQ_PORT = 0
+QUEUE_NAME = "ace-power-rabbitmq-queue"

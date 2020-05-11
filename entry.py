@@ -1,8 +1,9 @@
-from conn import mysql_pool, redis_pool
-from config import IS_NAIVE, QUERY_SQL, QUERY_INTERVAL
+from conn import mysql_pool, redis_pool, rabbitmq_conn
+from config import IS_NAIVE, QUERY_SQL, QUERY_INTERVAL, QUEUE_NAME
 from typing import List, Dict, Optional
 import redis
 import json
+import pika
 import _thread as thread
 
 
@@ -62,19 +63,31 @@ def query_from_redis(author_name: str) -> Optional[List[Dict[str, str]]]:
     return json.loads(cached)
 
 
-def add_to_rabbitmq(author_name: str) -> None:
-    # as RabbitMQ is not integrated now, mock it with query_from_mysql here
+def test_and_incr_in_redis(flag: str) -> int:
     connection = redis.Redis(connection_pool=redis_pool)
-    if connection.exists("waiting: " + author_name):
-        print("Already in queue:", author_name)
+    return connection.incr(flag)
+
+
+def add_to_rabbitmq(author_name: str) -> None:
+    flag_key = "Waiting: " + author_name
+    # atomically check whether author_name has already been added to the queue
+    if test_and_incr_in_redis(flag_key) != 1:
+        print("Already in queue or redis: ", author_name)
         return
-    connection.set("waiting: " + author_name, 1)
-    print("Put it in queue:", author_name)
-    add_to_redis(author_name, query_from_mysql(author_name), 60 * 30)
-    connection.delete("waiting: " + author_name)
-    print("Done:", author_name)
+    channel = rabbitmq_conn.channel()
+    channel.queue_declare(queue=QUEUE_NAME, durable=True)
+    channel.basic_publish(
+        exchange="",
+        routing_key=QUEUE_NAME,
+        body=author_name,
+        properties=pika.BasicProperties(
+            delivery_mode=2,    # make message persistent
+        )
+    )
+    print("Add to the queue: ", author_name)
 
 
 def add_to_redis(key: str, data: List[Dict[str, str]], ttl: int) -> bool:
     connection = redis.Redis(connection_pool=redis_pool)
+    print("Add to redis: ", key, data, ttl)
     return connection.set(key, json.dumps(data), ex=ttl)

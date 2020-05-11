@@ -1,6 +1,7 @@
-from config import *
-from DBUtils.PooledDB import PooledDB
 import pymysql
+from DBUtils.PooledDB import PooledDB
+import redis
+from config import *
 
 mysql_pool = PooledDB(pymysql,
                       host=MYSQL_HOST,
@@ -9,3 +10,7 @@ mysql_pool = PooledDB(pymysql,
                       passwd=MYSQL_PASSWORD,
                       db=MYSQL_DB,
                       charset=MYSQL_CHARSET)
+
+redis_pool = redis.ConnectionPool(host=REDIS_HOST,
+                                  port=REDIS_PORT,
+                                  password=REDIS_PASSWORD)

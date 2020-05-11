@@ -4,6 +4,7 @@
 
 # App Config
 IS_NAIVE = True
+QUERY_INTERVAL = 10
 QUERY_SQL = """
 SELECT am_author.name, am_affiliation.name
 FROM am_author, am_affiliation
@@ -20,3 +21,8 @@ MYSQL_USER = ""
 MYSQL_PASSWORD = ""
 MYSQL_DB = ""
 MYSQL_CHARSET = "utf8"
+
+# Redis
+REDIS_HOST = ""
+REDIS_PORT = 0
+REDIS_PASSWORD = ""

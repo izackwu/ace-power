@@ -23,7 +23,6 @@
 import Header from "./components/layout/Header";
 import SearchForm from "./components/SearchForm";
 import SearchResults from "./components/SearchResults";
-// import Pagination from './components/Pagination';
 import axios from "axios";
 
 export default {
@@ -56,41 +55,10 @@ export default {
       this.reformattedSearchString = searchParams.join(" ");
       this.api.q = searchParams.join("+");
       const { baseUrl, part, type, order, maxResults, q, key } = this.api;
-      // const apiUrl = `${baseUrl}part=${part}&type=${type}&order=${order}&q=${q}&maxResults=${maxResults}&key=${key}`;
       console.log(q);
       const apiUrl = `${baseUrl}/${q}`;
       this.getData(apiUrl);
     },
-
-    // prevPage() {
-    //   const {
-    //     baseUrl,
-    //     part,
-    //     type,
-    //     order,
-    //     maxResults,
-    //     q,
-    //     key,
-    //     prevPageToken
-    //   } = this.api;
-    //   const apiUrl = `${baseUrl}part=${part}&type=${type}&order=${order}&q=${q}&maxResults=${maxResults}&key=${key}&pageToken=${prevPageToken}`;
-    //   this.getData(apiUrl);
-    // },
-
-    // nextPage() {
-    //   const {
-    //     baseUrl,
-    //     part,
-    //     type,
-    //     order,
-    //     maxResults,
-    //     q,
-    //     key,
-    //     nextPageToken
-    //   } = this.api;
-    //   const apiUrl = `${baseUrl}part=${part}&type=${type}&order=${order}&q=${q}&maxResults=${maxResults}&key=${key}&pageToken=${nextPageToken}`;
-    //   this.getData(apiUrl);
-    // },
 
     getData(apiUrl) {
       axios
@@ -104,8 +72,6 @@ export default {
               this.getData(apiUrl);
             }, 1000 * res.data.waiting);
           }
-          // this.api.prevPageToken = res.data.prevPageToken;
-          // this.api.nextPageToken = res.data.nextPageToken;
         })
         .catch(error => console.log(error));
     }

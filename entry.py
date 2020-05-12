@@ -1,10 +1,9 @@
-from conn import mysql_pool, redis_pool, rabbitmq_conn
+from conn import mysql_pool, redis_pool, get_rabbitmq_conn
 from config import IS_NAIVE, QUERY_SQL, QUERY_INTERVAL, QUEUE_NAME
 from typing import List, Dict, Optional
 import redis
 import json
 import pika
-import _thread as thread
 
 
 def query(author_name: str) -> Dict[str, object]:
@@ -28,7 +27,7 @@ def query(author_name: str) -> Dict[str, object]:
         response["result"] = cached
         return response
     # cache miss, then add the query into RabbitMQ
-    thread.start_new_thread(add_to_rabbitmq, (author_name, ))
+    add_to_rabbitmq(author_name)
     # let the client wait for QUERY_INTERVAL seconds and then retry
     response["status"], response["waiting"] = False, QUERY_INTERVAL
     return response
@@ -74,9 +73,10 @@ def add_to_rabbitmq(author_name: str) -> None:
     if test_and_incr_in_redis(flag_key) != 1:
         print("Already in queue or redis: ", author_name)
         return
-    channel = rabbitmq_conn.channel()
-    channel.queue_declare(queue=QUEUE_NAME, durable=True)
-    channel.basic_publish(
+    rabbitmq_conn = get_rabbitmq_conn()
+    rabbitmq_channel = rabbitmq_conn.channel()
+    rabbitmq_channel.queue_declare(queue=QUEUE_NAME, durable=True)
+    rabbitmq_channel.basic_publish(
         exchange="",
         routing_key=QUEUE_NAME,
         body=author_name,
@@ -84,6 +84,7 @@ def add_to_rabbitmq(author_name: str) -> None:
             delivery_mode=2,    # make message persistent
         )
     )
+    rabbitmq_conn.close()
     print("Add to the queue: ", author_name)
 
 

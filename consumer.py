@@ -1,8 +1,8 @@
-from conn import rabbitmq_conn
+from conn import get_rabbitmq_conn
 from config import QUEUE_NAME, EXPIRE_TIME
 from entry import query_from_mysql, add_to_redis
 
-channel = rabbitmq_conn.channel()
+channel = get_rabbitmq_conn().channel()
 channel.queue_declare(queue=QUEUE_NAME, durable=True)
 
 

@@ -16,7 +16,7 @@ Then, as this program runs together with MySQL, Redis, RabbitMQ, you also need t
 sudo apt update
 sudo apt install mysql-server
 sudo apt install redis-server
-sudo apt insatll rabbitmq-server
+sudo apt install rabbitmq-server
 ```
 
 After successfully installing these software, edit `config.py` to make sure you can connect to them correctly.
